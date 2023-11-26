@@ -1,6 +1,8 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
-import FeedbackApp from './components/Feedback';
+// import FeedbackApp from './components/Feedback';
+// import PhonebookApp from './components/Phonebook';
+import ReaderApp from './components/ReaderApp';
 
 function App() {
   return (
@@ -21,7 +23,9 @@ function App() {
       </header> */}
 
       <div>
-        <FeedbackApp />
+        {/* <FeedbackApp /> */}
+        {/* <PhonebookApp/> */}
+        <ReaderApp/>
       </div>
     </div>
   );

@@ -12,7 +12,6 @@ export default function Statistics({ options }) {
         const { good } = options;
         const total = totalFeedback();
         const positivePercentage = good / total * 100 || 0;
-        console.log(positivePercentage);
         return positivePercentage.toPrecision(3) + '%';
     };
 
