@@ -1,50 +1,49 @@
-import React from "react";
-import ListItem from "../../ListItem";
+import { FirstToUpperCase } from '../../../utils';
 import PropTypes from 'prop-types';
 
-export default class Statistics extends React.Component {
-    totalFeedback = () => {
-        const values = Object.values(this.props.options);
+export default function Statistics({ options }) {
+    const totalFeedback = () => {
+        const values = Object.values(options);
         const total = values.reduce((acc, item) => (acc + item), 0);
         return total;
     };
 
-    positivePercentage = () => {
-        const { good } = this.props.options;
-        const total = this.totalFeedback();
-        const positivePercentage = total === 0 ? 0 : good / total * 100;
+    const positivePercentage = () => {
+        const { good } = options;
+        const total = totalFeedback();
+        const positivePercentage = good / total * 100 || 0;
+        console.log(positivePercentage);
         return positivePercentage.toPrecision(3) + '%';
     };
 
-    makeStatData = () => {
-        const total = { total: this.totalFeedback(), };
-        const positive = { 'positive feedback': this.positivePercentage(), };
-        return { ...this.props.options, ...total, ...positive };
+    const makeStatData = () => {
+        const total = { total: totalFeedback(), };
+        const positive = { 'positive feedback': positivePercentage(), };
+        return { ...options, ...total, ...positive };
     };
 
-    render() {
-        const msgEmpty = "No feedback give";
-        const isEmpty = !this.totalFeedback();
-        const statisticsDat = this.makeStatData();
-        const statisticsDatKeys = Object.keys(statisticsDat);
+    const msgEmpty = "No feedback give";
+    const isEmpty = !totalFeedback();
+    const statisticsDat = makeStatData();
+    const statisticsDatKeys = Object.keys(statisticsDat);
 
-        return (
-            <div>
-                {
-                    !isEmpty
-                        ? statisticsDatKeys.map(name =>
-                            <ListItem
-                                key={name}
-                                name={name}
-                                value={statisticsDat[name]}
-                            />
-                        )
-                        : <p>{msgEmpty}</p>
-                }
-            </div>
-        );
-    };
+    return (
+        <div>
+            {
+                !isEmpty
+                    ? statisticsDatKeys.map(name =>
+                        <div key={name}>
+                            <p>{FirstToUpperCase(name) + ':\t'}
+                                <span>{statisticsDat[name]}</span>
+                            </p>
+                        </div>
+                    )
+                    : <p>{msgEmpty}</p>
+            }
+        </div>
+    );
 };
+
 
 Statistics.protoTypes = {
     options: PropTypes.shape({
