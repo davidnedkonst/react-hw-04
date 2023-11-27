@@ -2,8 +2,9 @@
 import './App.css';
 // import FeedbackApp from './components/Feedback';
 // import PhonebookApp from './components/Phonebook';
-import ReaderApp from './components/ReaderApp';
-import publications from './constants/publications.json';
+// import ReaderApp from './components/ReaderApp';
+// import publications from './constants/publications.json';
+import PokemonApp from './components/PokemonApp';
 
 function App() {
   return (
@@ -26,7 +27,8 @@ function App() {
       <div>
         {/* <FeedbackApp /> */}
         {/* <PhonebookApp/> */}
-        <ReaderApp items={publications} />
+        {/* <ReaderApp items={publications} /> */}
+        <PokemonApp/>
       </div>
     </div>
   );
