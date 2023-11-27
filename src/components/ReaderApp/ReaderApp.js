@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { useState, useEffect } from "react";
 import Section from "../Section";
 import Controls from "./Controls";
 import Progress from "./Progress";
@@ -6,58 +6,47 @@ import Publication from "./Publication";
 
 const LS_READER_ID = "reader_publication_id";
 
-export default class ReaderApp extends Component {
-    state = { index: 0 };
+export default function ReaderApp({ items }) {
+    const [index, setIndex] = useState(
+        JSON.parse(localStorage.getItem(LS_READER_ID)) || 0
+    );
 
-    componentDidMount() {
-        const ls_index = localStorage.getItem(LS_READER_ID);
-        if (ls_index) this.setState({ index: Number(ls_index) });
-    };
+    useEffect(
+        () => {
+            localStorage.setItem(LS_READER_ID, JSON.parse(index));
+        },
+        [index]
+    );
 
-    componentDidUpdate(_, { index }) {
-        const newIndex = this.state.index;
-        if (index !== newIndex) {
-            localStorage.setItem(LS_READER_ID, newIndex);
-        };
-    };
-
-    changeIndex = (value) => {
-        const { index } = this.state;
-        const length = this.props.items.length;
-        if (value === -1 && index === 0) {
-            this.setState(({ index }) => ({ index: index + length - 1 }));
+    const changeIndex = value => {
+        if (value === -1 && !index) {
+            setIndex(s => s + items.length - 1);
             return;
         }
-        this.setState(({ index }) => ({ index: index + value }));
+        setIndex(s => s + value);
     };
 
-    render() {
-        const { index } = this.state;
-        const { items } = this.props;
-        const item = items[index];
-        const length = items.length;
+    return (
+        <Section title="Reader">
+            <div>
+                <Controls
+                    current={index + 1}
+                    total={items.length}
+                    handleClick={changeIndex}
+                />
 
-        return (
-            <Section title="Reader">
-                <div>
-                    <Controls
-                        current={index + 1}
-                        total={length}
-                        handleClick={this.changeIndex}
-                    />
+                <Progress
+                    current={index + 1}
+                    total={items.length}
+                />
 
-                    <Progress
-                        current={index + 1}
-                        total={length}
-                    />
+                <Publication
+                    id={items[index].id}
+                    title={items[index].title}
+                    text={items[index].text}
+                />
+            </div>
+        </Section>
+    );
 
-                    <Publication
-                        id={item.id}
-                        title={item.title}
-                        text={item.text}
-                    />
-                </div>
-            </Section>
-        );
-    };
 }

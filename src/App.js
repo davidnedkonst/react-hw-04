@@ -3,6 +3,7 @@ import './App.css';
 // import FeedbackApp from './components/Feedback';
 // import PhonebookApp from './components/Phonebook';
 import ReaderApp from './components/ReaderApp';
+import publications from './constants/publications.json';
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
       <div>
         {/* <FeedbackApp /> */}
         {/* <PhonebookApp/> */}
-        <ReaderApp/>
+        <ReaderApp items={publications} />
       </div>
     </div>
   );
