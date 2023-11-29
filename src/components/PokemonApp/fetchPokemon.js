@@ -7,4 +7,4 @@ export default function fetchPokemon(name) {
                 if (response.ok) return response.json();
                 if (!response.ok) return Promise.reject(new Error(errorMsg));
             });
-}
+};

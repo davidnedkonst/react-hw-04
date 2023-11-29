@@ -1,35 +1,47 @@
-import React, { Component } from "react";
-import ModalWindow from "./ModalWindow";
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 
-export default class Modal extends Component {
-    state = { showModal: false };
+import { ModalBackDrop } from "./ModalBackdrop";
+import { ModalContent } from "./ModalContent";
 
-    closeModal = () => {
-        this.setState({ showModal: false });
+export default function Modal({ children, showModal, onClose }) {
+
+    const modalRoot = document.getElementById('modal-root');
+
+    const handleKeyDown = ({ code }) => {
+        if (code === 'Escape') onClose();
     };
 
-    componentDidMount(prevProps, prevState) {
-        if (prevProps.showModal !== this.props.showModal) {
-            this.setState({ showModal: this.props.showModal });
-        }
+    const handleBackdropClick = ({ target, currentTarget }) => {
+        if (target === currentTarget) onClose();
     };
 
-    render() {
-        const { openButtonText, closeButtonText, children } = this.props;
-        const { showModal } = this.state;
+    useEffect(
+        () => {
+            window.addEventListener('keydown', handleKeyDown);
+        },
+        []
+    );
 
-        return (
-            <div>
-                <button type="button" onClick={this.closeModal}>{openButtonText}</button>
-                {
-                    showModal &&
-                    <ModalWindow onClose={this.closeModal}>
-                        {children}
-                        <button type="button" onClick={this.closeModal}>{closeButtonText}</button>
-                    </ModalWindow>
+    useEffect(
+        () => {
+            return (
+                () => {
+                    window.removeEventListener('keydown', handleKeyDown);
                 }
-            </div>
-        );
-    };
-};
+            );
+        },
+        []
+    );
 
+    const jsx = (
+        <ModalBackDrop onClick={handleBackdropClick} >
+            <ModalContent>
+                {children}
+                <button type="button" onClick={onClose}>Close</button>
+            </ModalContent>
+        </ModalBackDrop>
+    );
+
+    if (showModal) return createPortal(jsx, modalRoot);
+};

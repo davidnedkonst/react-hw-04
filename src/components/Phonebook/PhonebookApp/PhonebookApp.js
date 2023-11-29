@@ -1,68 +1,53 @@
-import React, { Component } from "react";
+import { useState, useEffect } from "react";
 import Section from "../../Section";
-import Modal from "../Modal";
+import Modal from "../Modal/Modal";
 import ContactForm from "../ContactForm";
 import ContactFilter from "../ContactFilter";
 import ContactList from "../ContactList";
 import { FirstToUpperCase, isName, toNumber } from "../../../utils";
-import initialContacts from "../../../constants/initialContacts.json";
 import { nanoid } from "nanoid";
 
-export default class PhonebookApp extends Component {
-    state = {
-        contacts: [...initialContacts],
-        filter: '',
+export default function PhonebookApp({ initialContacts }) {
+    const contactName = "contact";
+    const [contact, setContact] = useState(initialContacts);
+    const [filter, setFilter] = useState('');
+    const [showModal, setShowModal] = useState(false);
+
+    const toggleModal = () => {
+        setShowModal(s => !s);
     };
 
-    componentDidMount() {
-        const localeContacts = JSON.parse(localStorage.getItem("contacts"));
-        if (!localeContacts) {
-            localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
+    const addContact = ({ name, tel }) => {
+        const newName = FirstToUpperCase(name);
+        const isContact = contact.some(contact => contact.name.toLowerCase() === name.toLowerCase());
+
+        if (isContact) {
+            alert(`${newName} is already in contacts.`);
             return;
         }
-        if (localeContacts) this.setState({ contacts: localeContacts });
-    };
 
-    componentDidUpdate(prevProps, { contacts }) {
-        const newContacts = this.state.contacts;
-        if (contacts !== newContacts) {
-            localStorage.setItem("contacts", JSON.stringify(newContacts));
+        if (!isContact) {
+            const newContact = {
+                name: newName,
+                tel: toNumber(tel),
+                id: nanoid(),
+            };
+            setContact(s => [newContact, ...s]);
         }
     };
 
-    addContact = ({ name, tel }) => {
-        const Name = FirstToUpperCase(name);
-
-        if (this.state.contacts.some(contact => contact.name.toLowerCase() === name.toLowerCase())) {
-            alert(`${Name} is already in contacts.`);
-            return;
-        };
-
-        const newContact = {
-            name: Name,
-            tel: toNumber(tel),
-            id: nanoid(),
-        };
-
-        this.setState(({ contacts }) => ({ contacts: [newContact, ...contacts] }));
+    const deleteContact = deleteId => {
+        setContact(s => s.filter(({ id }) => (id !== deleteId))
+        )
     };
 
-    deleteContact = deleteId => {
-        this.setState(({ contacts }) => (
-            { contacts: contacts.filter(({ id }) => (id !== deleteId)) }
-        ))
-    };
-
-    onContactFilterChange = ({target}) => {
+    const onContactFilterChange = ({ target }) => {
         const { value } = target;
-        this.setState(
-            { filter: value.toLowerCase() }
-        );
+        setFilter(value.toLowerCase());
     };
 
-    getFilterContacts = () => {
-        const { filter, contacts } = this.state;
-        const filterContacts = contacts.filter(
+    const getFilterContacts = () => {
+        const filterContacts = contact.filter(
             ({ name, tel }) => {
                 const n = name.toLowerCase();
                 if (isName(filter)) return n.includes(filter);
@@ -74,38 +59,52 @@ export default class PhonebookApp extends Component {
         return filterContacts;
     };
 
-    render() {
-        const { filter } = this.state;
-        const filterContacts = this.getFilterContacts();
+    useEffect(
+        () => {
+            const localeContact = JSON.parse(localStorage.getItem(contactName));
+            if (localeContact) {
+                setContact(localeContact);
+                return;
+            }
+            if (!localeContact) {
+                localStorage.setItem(contactName, JSON.stringify(contact));
+                return;
+            }
+        },
+        []
+    );
 
-        return (
-            <div>
-                <h2>Phonebook</h2>
+    useEffect(
+        () => {
+            localStorage.setItem(contactName, JSON.stringify(contact));
+        },
+        [contact]
+    );
 
-                <Section title='ContactForm'>
-                    {/* <Modal
-                        openButtonText="Add contact"
-                        closeButtonText="Close"
-                        showModal
-                    >
-                        <ContactForm onSubmit={this.addContact} />
-                    </Modal> */}
-                </Section>
+    return (
+        <div>
+            <h2>Phonebook</h2>
 
-                <Section title='Filter'>
-                    <ContactFilter
-                        value={filter}
-                        onChange={this.onContactFilterChange}
-                    />
-                </Section>
+            <Section title='ContactForm'>
+                <button type="button" onClick={toggleModal}>Add contact</button>
+                <Modal showModal={showModal} onClose={toggleModal}>
+                    <ContactForm onSubmit={addContact} />
+                </Modal>
+            </Section>
 
-                <Section title='Contacts'>
-                    <ContactList
-                        contacts={filterContacts}
-                        onDelete={this.deleteContact}
-                    />
-                </Section>
-            </div>
-        );
-    };
+            <Section title='Filter'>
+                <ContactFilter
+                    value={filter}
+                    onChange={onContactFilterChange}
+                />
+            </Section>
+
+            <Section title='Contacts'>
+                <ContactList
+                    contacts={getFilterContacts()}
+                    onDelete={deleteContact}
+                />
+            </Section>
+        </div>
+    );
 };

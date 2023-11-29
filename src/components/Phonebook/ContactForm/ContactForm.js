@@ -1,4 +1,3 @@
-import React, {Component} from "react";
 import FormError from "../FormError";
 import { Formik, Form, Field } from "formik";
 import * as Yup from 'yup';
@@ -16,37 +15,33 @@ const validationSchema = Yup.object().shape({
         .required('Tel number required'),
 });
 
-export default class ContactForm extends Component {
-    onSubmit = (values, { resetForm }) => {
-        this.props.onSubmit(values);
+export default function ContactForm({ onSubmit }) {
+    const handleSubmit = (values, { resetForm }) => {
+        onSubmit(values);
         resetForm();
     };
 
-    render() {
-        return (
-            <div>
-                <Formik
-                    initialValues={initialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={this.onSubmit}
-                >
-                    <Form autoComplete="on">
-                        <div>
-                            <label htmlFor="name">Name</label>
-                            <Field name="name" placeholder="Full Name" />
-                            <FormError name="name" />
-                        </div>
-                        <div>
-                            <label htmlFor="tel">Tel</label>
-                            <Field name="tel" placeholder="Tel number" />
-                            <FormError name="tel" />
-                        </div>
-                        <button type="submit">Add contact</button>
-                    </Form>
-                </Formik>
-            </div>
-        );
-    };
+    return (
+        <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+        >
+            <Form autoComplete="on">
+                <div>
+                    <label htmlFor="name">Name</label>
+                    <Field name="name" placeholder="Full Name" />
+                    <FormError name="name" />
+                </div>
+                <div>
+                    <label htmlFor="tel">Tel</label>
+                    <Field name="tel" placeholder="Tel number" />
+                    <FormError name="tel" />
+                </div>
+                <button type="submit">Add contact</button>
+            </Form>
+        </Formik>
+    );
 };
 
 ContactForm.propTypes = {

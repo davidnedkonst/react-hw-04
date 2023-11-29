@@ -1,10 +1,12 @@
 // import logo from './logo.svg';
 import './App.css';
 // import FeedbackApp from './components/Feedback';
-// import PhonebookApp from './components/Phonebook';
+import PhonebookApp from './components/Phonebook';
+import initialContacts from "./constants/initialContacts.json";
 // import ReaderApp from './components/ReaderApp';
 // import publications from './constants/publications.json';
-import PokemonApp from './components/PokemonApp';
+// import PokemonApp from './components/PokemonApp';
+// import PlayerApp from './components/PlayerApp';
 
 function App() {
   return (
@@ -26,9 +28,10 @@ function App() {
 
       <div>
         {/* <FeedbackApp /> */}
-        {/* <PhonebookApp/> */}
+        <PhonebookApp initialContacts={initialContacts}/>
         {/* <ReaderApp items={publications} /> */}
-        <PokemonApp/>
+        {/* <PokemonApp/> */}
+        {/* <PlayerApp /> */}
       </div>
     </div>
   );
