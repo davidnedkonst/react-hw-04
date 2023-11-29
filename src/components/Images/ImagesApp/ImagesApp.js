@@ -14,7 +14,7 @@ const initState = {
     images: [],
     total: 0,
     page: 1,
-    perPage: 100,
+    perPage: 12,
     showModal: false,
     showGallery: false,
     showButton: false,
@@ -92,7 +92,6 @@ export default function ImagesApp({ time = 1000 }) {
                             .then(
                                 ({ hits, totalHits }) => {
                                     const shortageImage = totalHits - image.length;
-                                    console.log(shortageImage);
                                     const newImage = shortageImage >= perPage ? hits : hits.slice(0, shortageImage);
                                     setImage([...image, ...newImage]);
                                     setTotal(totalHits);
