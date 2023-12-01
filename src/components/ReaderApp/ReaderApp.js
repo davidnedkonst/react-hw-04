@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useLocalStorage } from "../../utils";
 import Section from "../Section";
 import Controls from "./Controls";
 import Progress from "./Progress";
@@ -7,16 +7,7 @@ import Publication from "./Publication";
 const LS_READER_ID = "reader_publication_id";
 
 export default function ReaderApp({ items }) {
-    const [index, setIndex] = useState(() => {
-        return JSON.parse(localStorage.getItem(LS_READER_ID)) || 0;}
-    );
-
-    useEffect(
-        () => {
-            localStorage.setItem(LS_READER_ID, JSON.parse(index));
-        },
-        [index]
-    );
+    const [index, setIndex] = useLocalStorage(LS_READER_ID, 0);
 
     const changeIndex = value => {
         if (value === -1 && !index) {

@@ -3,9 +3,9 @@ import './App.css';
 // import FeedbackApp from './components/Feedback';
 // import PhonebookApp from './components/Phonebook';
 // import initialContacts from "./constants/initialContacts.json";
-// import ReaderApp from './components/ReaderApp';
-// import publications from './constants/publications.json';
-import PokemonApp from './components/PokemonApp';
+import ReaderApp from './components/ReaderApp';
+import publications from './constants/publications.json';
+// import PokemonApp from './components/PokemonApp';
 // import PlayerApp from './components/PlayerApp';
 // import ImagesApp from './components/Images/ImagesApp';
 
@@ -30,8 +30,8 @@ function App() {
       <div>
         {/* <FeedbackApp /> */}
         {/* <PhonebookApp initialContacts={initialContacts}/> */}
-        {/* <ReaderApp items={publications} /> */}
-        <PokemonApp/>
+        <ReaderApp items={publications} />
+        {/* <PokemonApp/> */}
         {/* <PlayerApp /> */}
         {/* <ImagesApp time={500} /> */}
       </div>
