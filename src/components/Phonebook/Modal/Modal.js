@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import { ModalBackDrop } from "./ModalBackdrop";
 import { ModalContent } from "./ModalContent";
 
-export default function Modal({ children, showModal, onClose }) {
+export default function Modal({ children, show, onClose }) {
 
     const modalRoot = document.getElementById('modal-root');
 
@@ -43,5 +43,5 @@ export default function Modal({ children, showModal, onClose }) {
         </ModalBackDrop>
     );
 
-    if (showModal) return createPortal(jsx, modalRoot);
+    if (show) return createPortal(jsx, modalRoot);
 };
