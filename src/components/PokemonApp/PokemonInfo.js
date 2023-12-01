@@ -1,8 +1,7 @@
 import Section from "../Section";
 
-export default function PokemonInfo({info}) {
+export default function PokemonInfo({ info }) {
     const { name, sprites, stats, weight } = info;
-
     return (
         <Section title="Pokemon Info">
             <h3>{name}</h3>

@@ -15,7 +15,7 @@ const enumStatus = {
 
 const initState = {
     pokemon: null,
-    pokemonName: null,
+    query: null,
     error: null,
     status: enumStatus.idle,
 };
@@ -23,35 +23,38 @@ const initState = {
 const loadMsg = "Идет загрузка...";
 
 export default function PokemonApp() {
-    const [pokemon, setPokemon] = useState(null);
-    const [query, setQuery] = useState(null);
-    const [error, setError] = useState(null);
-    const [status, setStatus] = useState(enumStatus.idle);
+    const [pokemon, setPokemon] = useState(initState.pokemon);
+    const [query, setQuery] = useState(initState.query);
+    const [error, setError] = useState(initState.error);
+    const [status, setStatus] = useState(initState.status);
 
-    const handleSubmit = name => {
-        setQuery(name);
+    const handleSubmit = query => {
+        setQuery(query);
     };
 
     useEffect(
         () => {
-            setStatus(enumStatus.pending);
-            setTimeout(
-                () => {
-                    fetchPokemon(query)
-                        .then(
-                            response => {
-                                setPokemon(response);
-                                setStatus(enumStatus.resolved);
-                            }
-                        )
-                        .catch(
-                            error => {
-                                setError(error);
-                                setStatus(enumStatus.rejected);
-                            }
-                        )
-                }, 1000
-            );
+            if (query !== initState.query) {
+                setError(initState.error);
+                setStatus(enumStatus.pending);
+                setTimeout(
+                    () => {
+                        fetchPokemon(query)
+                            .then(
+                                response => {
+                                    setPokemon(response);
+                                    setStatus(enumStatus.resolved);
+                                }
+                            )
+                            .catch(
+                                error => {
+                                    setError(error);
+                                    setStatus(enumStatus.rejected);
+                                }
+                            )
+                    }, 1000
+                );
+            }
         },
         [query]
     );
@@ -74,20 +77,3 @@ export default function PokemonApp() {
         </Section>
     );
 }
-
-// componentDidUpdate(prevProps, prevState) {
-//     const prevName = prevState.pokemonName;
-//     const nextName = this.state.pokemonName;
-
-//     if (prevName !== nextName) {
-//         this.setState({ status: enumStatus.pending });
-
-//         setTimeout(
-//             () => {
-//                 fetchPokemon(nextName)
-//                     .then(pokemon => this.setState({ pokemon, status: enumStatus.resolved }))
-//                     .catch(error => this.setState({ error, status: enumStatus.rejected }))
-//             }, 1000
-//         );
-//     };
-// };

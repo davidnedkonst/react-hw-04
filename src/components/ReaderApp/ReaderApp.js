@@ -7,8 +7,8 @@ import Publication from "./Publication";
 const LS_READER_ID = "reader_publication_id";
 
 export default function ReaderApp({ items }) {
-    const [index, setIndex] = useState(
-        JSON.parse(localStorage.getItem(LS_READER_ID)) || 0
+    const [index, setIndex] = useState(() => {
+        return JSON.parse(localStorage.getItem(LS_READER_ID)) || 0;}
     );
 
     useEffect(
