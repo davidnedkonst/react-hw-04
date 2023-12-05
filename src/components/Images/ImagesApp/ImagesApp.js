@@ -21,7 +21,7 @@ const initState = {
     showLoader: false,
     contentModal: null,
     error: null,
-    status: Status.idle,
+    status: Status.IDLE,
 };
 
 export default function ImagesApp({ time = 1000 }) {
@@ -31,12 +31,12 @@ export default function ImagesApp({ time = 1000 }) {
     const [page, setPage] = useState(initState.page);
     const [perPage, setPerPage] = useState(initState.perPage);
     const [showModal, setShowModal] = useState(initState.showModal);
-    const [contentModal, setcontentModal] = useState(initState.contentModal);
+    const [contentModal, setContentModal] = useState(initState.contentModal);
     const [showGallery, setShowGallery] = useState(initState.showGallery);
     const [showButton, setShowButton] = useState(initState.showButton);
     const [showLoader, setShowLoader] = useState(initState.showLoader);
     const [error, setError] = useState(initState.error);
-    const [status, setStatus] = useState(Status.idle);
+    const [status, setStatus] = useState(Status.IDLE);
 
     const resetState = () => {
         setQuery(initState.query);
@@ -45,9 +45,9 @@ export default function ImagesApp({ time = 1000 }) {
         setPage(initState.page);
         setPerPage(initState.perPage);
         setShowModal(initState.showModal);
-        setcontentModal(initState.contentModal);
+        setContentModal(initState.contentModal);
         setError(initState.error);
-        setStatus(Status.idle);
+        setStatus(Status.IDLE);
     };
 
     const handleSubmit = query => {
@@ -64,28 +64,49 @@ export default function ImagesApp({ time = 1000 }) {
     const handleImageClick = image => {
         if (image) {
             setShowModal(true);
-            setcontentModal(image);
+            setContentModal(image);
         }
     };
 
     const closeModal = () => {
         setShowModal(initState.showModal);
-        setcontentModal(initState.contentModal);
+        setContentModal(initState.contentModal);
     };
 
+    //Update status and reset error
     useEffect(
         () => {
             const isUpdateQuery = query !== initState.query;
             const isUpdatePage = page !== initState.page;
-            const isUpdate = isUpdateQuery || isUpdatePage;
+            const isError = error ? true : false;
 
-            if (query !== initState.query)
-                setStatus(Status.pending);
+            if (isUpdateQuery) setStatus(Status.PENDING);
+            if (isUpdatePage) setStatus(Status.LOADING);
+            if (isError) setStatus(Status.REJECTED);
+        },
+        [status, query, page, error]
+    );
 
-            if (page !== initState.page)
-                setStatus(Status.loading);
+    //Update showing and reset
+    useEffect(
+        () => {
+            setShowGallery(status === Status.RESOLVED || status === Status.LOADING);
+            setShowButton(status === Status.RESOLVED && image.length < total && total !== 0);
+            setShowLoader(status === Status.PENDING || status === Status.LOADING);
 
-            if (isUpdate) {
+            if (
+                status === Status.PENDING ||
+                status === Status.LOADING ||
+                status === Status.RESOLVED
+            ) setError(initState.error);
+        },
+        [status, image, total]
+    );
+
+    //Fetch
+    useEffect(
+        () => {
+            if (status === Status.PENDING || status === Status.LOADING) {
                 setTimeout(
                     () => {
                         fetchFromUrl(query, page, perPage)
@@ -95,29 +116,15 @@ export default function ImagesApp({ time = 1000 }) {
                                     const newImage = shortageImage >= perPage ? hits : hits.slice(0, shortageImage);
                                     setImage([...image, ...newImage]);
                                     setTotal(totalHits);
-                                    setStatus(Status.resolved);
+                                    setStatus(Status.RESOLVED);
                                 }
                             )
-                            .catch(
-                                error => {
-                                    setError(error);
-                                    setStatus(Status.rejected);
-                                }
-                            );
+                            .catch(error => setError(error));
                     }, time
                 );
             }
         },
-        [query, page]
-    );
-
-    useEffect(
-        () => {
-            setShowGallery(status === Status.resolved || status === Status.loading);
-            setShowButton(status === Status.resolved && image.length < total && total !== 0);
-            setShowLoader(status === Status.pending || status === Status.loading);
-        },
-        [status]
+        [query, page, perPage, image, error, status, time]
     );
 
     return (

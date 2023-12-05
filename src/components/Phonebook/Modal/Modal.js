@@ -1,37 +1,38 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 import { ModalBackDrop } from "./ModalBackdrop";
 import { ModalContent } from "./ModalContent";
 
+const ESC_CODE = 'Escape';
+const KEYDOWN_CODE = 'keydown';
+
 export default function Modal({ children, show, onClose }) {
 
-    const modalRoot = document.getElementById('modal-root');
+    const modalRoot = useRef(document.getElementById('modal-root'));
 
     const handleKeyDown = ({ code }) => {
-        if (code === 'Escape') onClose();
+        if (code === ESC_CODE) {
+            onClose();
+        }
     };
 
     const handleBackdropClick = ({ target, currentTarget }) => {
-        if (target === currentTarget) onClose();
+        if (target === currentTarget) {
+            onClose();
+        }
     };
 
     useEffect(
         () => {
-            window.addEventListener('keydown', handleKeyDown);
-        },
-        []
-    );
+            window.addEventListener(KEYDOWN_CODE, handleKeyDown);
 
-    useEffect(
-        () => {
             return (
                 () => {
-                    window.removeEventListener('keydown', handleKeyDown);
+                    window.removeEventListener(KEYDOWN_CODE, handleKeyDown);
                 }
             );
-        },
-        []
+        }
     );
 
     const jsx = (
@@ -43,5 +44,5 @@ export default function Modal({ children, show, onClose }) {
         </ModalBackDrop>
     );
 
-    if (show) return createPortal(jsx, modalRoot);
+    if (show) return createPortal(jsx, modalRoot.current);
 };

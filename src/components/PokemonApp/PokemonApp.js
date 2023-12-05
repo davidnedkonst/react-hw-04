@@ -5,19 +5,13 @@ import PokemonInfo from "./PokemonInfo";
 import PokemonErrorMsg from "./PokemonErrorMsg";
 import PokemonLoadMsg from "./PokemonLoadMsg";
 import fetchPokemon from "./fetchPokemon";
-
-const enumStatus = {
-    idle: 1,
-    pending: 2,
-    rejected: 3,
-    resolved: 4,
-};
+import { Status } from "../../utils";
 
 const initState = {
     pokemon: null,
     query: null,
     error: null,
-    status: enumStatus.idle,
+    status: Status.IDLE,
 };
 
 const loadMsg = "Идет загрузка...";
@@ -32,46 +26,67 @@ export default function PokemonApp() {
         setQuery(query);
     };
 
+    //Reset and update status
+    useEffect(
+        () => {
+            if (pokemon !== initState.pokemon) {
+                setQuery(initState.query);
+                setStatus(Status.RESOLVED);
+            }
+        },
+        [pokemon]
+    );
+
     useEffect(
         () => {
             if (query !== initState.query) {
                 setError(initState.error);
-                setStatus(enumStatus.pending);
-                setTimeout(
-                    () => {
-                        fetchPokemon(query)
-                            .then(
-                                response => {
-                                    setPokemon(response);
-                                    setStatus(enumStatus.resolved);
-                                }
-                            )
-                            .catch(
-                                error => {
-                                    setError(error);
-                                    setStatus(enumStatus.rejected);
-                                }
-                            )
-                    }, 1000
-                );
+                setStatus(Status.PENDING);
             }
         },
         [query]
+    );
+
+    useEffect(
+        () => {
+            if (error !== initState.error) {
+                setQuery(initState.query);
+                setPokemon(initState.pokemon);
+                setStatus(Status.REJECTED);
+            }
+        },
+        [error]
+    );
+
+    //Fetch
+    useEffect(
+        () => {
+            if (status !== Status.PENDING) return;
+
+            setTimeout(
+                () => {
+                    fetchPokemon(query)
+                        .then(response => setPokemon(response))
+                        .catch(error => setError(error))
+                }, 1000
+            );
+        },
+        [query, status]
     );
 
     return (
         <Section title="Pokemon App">
             <PokemonForm onSubmit={handleSubmit} />
             {
-                status === enumStatus.rejected &&
+                status === Status.REJECTED &&
                 <PokemonErrorMsg msg={error.message} />
             }
             {
-                status === enumStatus.pending &&
+                status === Status.PENDING &&
                 <PokemonLoadMsg msg={loadMsg} />
             }
             {
-                status === enumStatus.resolved &&
+                status === Status.RESOLVED &&
                 <PokemonInfo info={pokemon} />
             }
         </Section>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Section from "../../Section";
 import Modal from "../Modal/Modal";
 import ContactForm from "../ContactForm";
@@ -7,9 +7,10 @@ import ContactList from "../ContactList";
 import { FirstToUpperCase, isName, toNumber, useLocalStorage } from "../../../utils";
 import { nanoid } from "nanoid";
 
+const CONTACT_ID = "contact";
+
 export default function PhonebookApp({ initialContacts = [] }) {
-    const contactId = "contact";
-    const [contact, setContact] = useLocalStorage(contactId, initialContacts);
+    const [contact, setContact] = useLocalStorage(CONTACT_ID, initialContacts);
     const [filter, setFilter] = useState('');
     const [showModal, setShowModal] = useState(false);
 

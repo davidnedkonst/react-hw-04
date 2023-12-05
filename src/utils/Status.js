@@ -1,9 +1,10 @@
 const Status = {
-    idle: 1,
-    pending: 2,
-    rejected: 3,
-    resolved: 4,
-    loading: 5,
+    IDLE: 'idle',
+    PENDING: 'pending',
+    REJECTED: 'rejected',
+    RESOLVED: 'resolved',
+    LOADING: 'loading',
+    RESET: 'reset',
 };
 
 export default Status;

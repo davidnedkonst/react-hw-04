@@ -2,20 +2,23 @@ import { useState } from "react";
 
 const alertMsg = "Enter name!";
 
-export default function PokemonForm({onSubmit}) {
+export default function PokemonForm({ onSubmit }) {
     const [name, setName] = useState('');
 
-    const handleNameChange = event => {
-        setName(event.currentTarget.value.toLowerCase().trim());
+    const handleNameChange = ({ currentTarget: { value } }) => {
+        setName(value.toLowerCase().trim());
     };
 
     const handleSubmit = event => {
         event.preventDefault();
+
         if (!name) {
             alert(alertMsg);
             return;
         }
+
         onSubmit(name);
+        
         setName('');
     };
 

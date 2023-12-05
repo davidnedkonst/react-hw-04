@@ -7,9 +7,7 @@ export default function ImageGalleryItem({ item, onImageClick }) {
                 className={css.ImageGalleryItemImage}
                 src={item.webformatURL}
                 alt={item.tags}
-                onClick={
-                    () => { onImageClick(item) }
-                }
+                onClick={() => { onImageClick(item) }}
             />
         </div>
     );

@@ -1,13 +1,14 @@
 // import logo from './logo.svg';
 import './App.css';
 // import FeedbackApp from './components/Feedback';
-import PhonebookApp from './components/Phonebook';
-import initialContacts from "./constants/initialContacts.json";
+// import PhonebookApp from './components/Phonebook';
+// import initialContacts from "./constants/initialContacts.json";
 // import ReaderApp from './components/ReaderApp';
 // import publications from './constants/publications.json';
-// import PokemonApp from './components/PokemonApp';
+import PokemonApp from './components/PokemonApp';
 // import PlayerApp from './components/PlayerApp';
 // import ImagesApp from './components/Images/ImagesApp';
+// import ClockApp from './components/ClockApp';
 
 function App() {
   return (
@@ -29,11 +30,12 @@ function App() {
 
       <div>
         {/* <FeedbackApp /> */}
-        <PhonebookApp/>
+        {/* <PhonebookApp initialContacts={initialContacts} /> */}
         {/* <ReaderApp items={publications} /> */}
-        {/* <PokemonApp/> */}
+        <PokemonApp/>
         {/* <PlayerApp /> */}
         {/* <ImagesApp time={500} /> */}
+        {/* <ClockApp /> */}
       </div>
     </div>
   );
