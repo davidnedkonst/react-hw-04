@@ -5,9 +5,9 @@ import './App.css';
 // import initialContacts from "./constants/initialContacts.json";
 // import ReaderApp from './components/ReaderApp';
 // import publications from './constants/publications.json';
-import PokemonApp from './components/PokemonApp';
+// import PokemonApp from './components/PokemonApp';
 // import PlayerApp from './components/PlayerApp';
-// import ImagesApp from './components/Images/ImagesApp';
+import ImagesApp from './components/Images/ImagesApp';
 // import ClockApp from './components/ClockApp';
 
 function App() {
@@ -32,9 +32,9 @@ function App() {
         {/* <FeedbackApp /> */}
         {/* <PhonebookApp initialContacts={initialContacts} /> */}
         {/* <ReaderApp items={publications} /> */}
-        <PokemonApp/>
+        {/* <PokemonApp/> */}
         {/* <PlayerApp /> */}
-        {/* <ImagesApp time={500} /> */}
+        <ImagesApp time={500} />
         {/* <ClockApp /> */}
       </div>
     </div>
