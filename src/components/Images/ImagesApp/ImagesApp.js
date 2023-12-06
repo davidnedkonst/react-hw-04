@@ -1,119 +1,44 @@
-import { useState, useReducer, useEffect } from "react";
+import { useReducer, useEffect } from "react";
 import Button from "../Button";
 import Loader from "../Loader";
 import ImageModal from "../ImageModal";
 import fetchFromUrl from "../fetch";
 import Searchbar from "../Searchbar";
 import ImageGallery from "../ImageGallery";
-import { Status } from "../../../utils";
+import reducer from "../reducer";
+import STATUS from "../Status";
+import ACTION from "../Action";
+import initState from "../initState";
 
 import css from "./ImagesApp.module.css";
-
-const initState = {
-    query: null,
-    image: [],
-    total: 0,
-    page: 1,
-    perPage: 12,
-    activeImage: null,
-};
-
-const initStatus = {
-    status: Status.IDLE,
-    showModal: false,
-    showGallery: false,
-    showButton: false,
-    showLoader: false,
-    error: null,
-};
-
-const reducerState = (state, action) => {
-    switch (action.type) {
-        case 'query':
-            return ({ ...initState, query: action.query, });
-            break;
-
-        case 'image':
-            return ({ ...initState, image: [...state.image, ...action.image], });
-            break;
-
-        case 'page':
-            return ({ ...initState, page: state.page + 1, });
-            break;
-
-        case 'activeImage':
-            return ({ ...initState, activeImage: action.activeImage, });
-            break;
-
-        default:
-            break;
-    }
-};
-const reducerStatus = (state, action) => {
-    switch (action.type) {
-        case 'status':
-            return ;
-            break;
-
-        default:
-            break;
-    }
-};
 
 export default function ImagesApp({ time = 1000 }) {
 
     //General state
-    const [state, setState] = useReducer(reducerState, initState);
-    const [status, setStatus] = useReducer(reducerStatus, initStatus);
+    const [state, dispatch] = useReducer(reducer, initState);
 
-    //Reset
-    // const resetState = () => {
-    //     setQuery(initState.query);
-    //     setImage(initState.images);
-    //     setTotal(initState.total);
-    //     setPage(initState.page);
-    //     setPerPage(initState.perPage);
-    //     setShowModal(initState.showModal);
-    //     setContentModal(initState.contentModal);
-    //     setError(initState.error);
-    //     setStatus(Status.IDLE);
-    // };
+    //Handlers
+    const Handler = {
+        submit: query => {
+            dispatch({ type: ACTION.INPUT, value: query });
+        },
 
-    const handleSubmit = query => {
-        if (query) {
-            setState({ type: 'query', query });
-        }
+        reset: event => {
+            dispatch({ type: ACTION.RESET });
+        },
+
+        load: event => {
+            dispatch({ type: ACTION.LOAD });
+        },
+
+        select: selectImage => {
+            dispatch({ type: ACTION.SELECT, value: selectImage });
+        },
+
+        close: () => {
+            dispatch({ type: ACTION.CLOSE, });
+        },
     };
-
-    const handleLoadClick = event => {
-        const isShortageImage = state.image.length < state.total;
-        if (isShortageImage) {
-            setState({ type: 'page' });
-        }
-    };
-
-    const handleImageClick = activeImage => {
-        if (activeImage) {
-            setState({ type: 'activeImage', activeImage });
-        }
-    };
-
-    const closeModal = () => {
-        // setShowModal(initState.showModal);
-        setState({ type: 'activeImage', activeImage: initState.activeImage });
-        setStatus({ type: 'showModal', showModal: false, });
-    };
-
-    //Update status
-    // useEffect(() => {
-    //     const isUpdateQuery = query !== initState.query;
-    //     if (isUpdateQuery) {
-    //         setError(initState.error);
-    //         setImage(initState.image);
-    //         setStatus(Status.PENDING);
-    //         console.log(Status.PENDING);
-    //     }
-    // }, [query]);
 
     // useEffect(() => {
     //     const runFetch = status === Status.PENDING || status === Status.LOADING;
@@ -186,51 +111,63 @@ export default function ImagesApp({ time = 1000 }) {
     // );
 
     //Fetch
-    // useEffect(
-    //     () => {
-    //         const runFetch = status.status === Status.PENDING || status.status === Status.LOADING;
+    useEffect(
+        () => {
+            const runFetch = state.status === STATUS.PENDING || state.status === STATUS.LOADING;
 
-    //         if (runFetch) {
-    //             setTimeout(
-    //                 () => {
-    //                     fetchFromUrl(state.query, state.page, state.perPage)
-    //                         .then(
-    //                             ({ hits, totalHits }) => {
-    //                                 const shortageImage = totalHits - image.length;
-    //                                 const newImage = shortageImage >= perPage ? hits : hits.slice(0, shortageImage);
-    //                                 setImage([...image, ...newImage]);
-    //                                 setTotal(totalHits);
-    //                             }
-    //                         )
-    //                         .catch(error => setError(error));
-    //                 }, time
-    //             );
-    //         };
-    //     },
-    //     [state.query, state.page, state.perPage, state.image, status.error, status.status, time]
-    // );
+            if (runFetch) {
+                setTimeout(
+                    () => {
+                        fetchFromUrl(state.query, state.page, state.perPage)
+                            .then(
+                                ({ hits, totalHits }) => {
+                                    dispatch({
+                                        type: ACTION.RESPONSE,
+                                        value: { newImage: [...hits], newTotal: totalHits },
+                                    });
+                                }
+                            )
+                            .catch(error => console.log(error));
+                    }, time
+                );
+            };
+        },
+        [state, time]
+    );
 
     return (
         <div className={css.ImagesApp}>
             <h2>ImagesApp</h2>
-            <Searchbar onSubmit={handleSubmit} />
-            <ImageGallery
-                show={status.showGallery}
-                image={state.image}
-                onImageClick={handleImageClick}
-            />
+
+            <Searchbar onSubmit={Handler.submit} />
+
             <Button
-                show={status.showButton}
-                onLoadClick={handleLoadClick}
+                show={state.showResetButton}
+                name="Reset"
+                onClick={Handler.reset}
             />
+
+            <ImageGallery
+                show={state.showGallery}
+                image={state.image}
+                onImageClick={Handler.select}
+            />
+
+            <Button
+                show={state.showLoadButton}
+                name="Load"
+                onClick={Handler.load}
+            />
+
             <Loader
-                show={status.showLoader}
+                show={state.showLoader}
             />
+
             <ImageModal
-                show={status.showModal}
-                contentModal={state.contentModal}
-                onClose={closeModal}
+                show={state.showModal}
+                contentModal={state.selectImage}
+                onClose={Handler.close}
             />
         </div>
-    )
+    );
 };
