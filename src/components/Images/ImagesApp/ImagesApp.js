@@ -42,30 +42,12 @@ export default function ImagesApp() {
         },
     };
 
-    // useEffect(() => {
-    //     const isError = error ? true : false;
-    //     if (isError) {
-    //         setStatus(Status.REJECTED);
-    //         console.log(Status.REJECTED);
-    //     }
-    // }, [error]);
-
-    //Reset error
-    // useEffect(
-    //     () => {
-    //         const isNoError = status === Status.PENDING || status === Status.LOADING || status === Status.RESOLVED;
-
-    //         if (isNoError) setError(initState.error);
-    //     },
-    //     [error, status]
-    // );
-
     //Fetch
     useEffect(
         () => {
-            const runFetch =
-                state.status === STATUS.PENDING ||
-                state.status === STATUS.LOADING;
+            const pending = state.status === STATUS.PENDING;
+            const loading = state.status === STATUS.LOADING;
+            const runFetch = pending || loading;
 
             if (runFetch) {
                 setTimeout(
