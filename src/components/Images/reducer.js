@@ -8,32 +8,26 @@ const reducer = (state, { type, value }) => {
         image,
         total,
         page,
-        // perPage,
-        // selectImage,
-        // status,
-        // showModal,
-        // showGallery,
-        // showButton,
-        // showLoader,
-        // error
     } = state;
 
     switch (type) {
         case ACTION.INPUT: {
             const isUpdateQuery = query !== value;
-            console.log(`Action: ${ACTION.INPUT}. Value: ${value}.`);
+            console.log(`Action: ${ACTION.INPUT}.`);
             if (isUpdateQuery) {
                 console.log(
                     `Reducer run. 
                     \nSet query: ${value}. 
                     \nSet status: ${STATUS.PENDING}
-                    \nSet showReset: true.`
+                    \nSet showReset: true.
+                    \nSet showLoader: true.`
                 );
                 return ({
                     ...initState,
                     query: value,
                     status: STATUS.PENDING,
                     showResetButton: true,
+                    showLoader: true,
                 });
             }
             else {
@@ -54,37 +48,40 @@ const reducer = (state, { type, value }) => {
                     \nSet image. 
                     \nSet status: ${STATUS.RESOLVED}
                     \nSet showGallery: true.
-                    \nSet showLoadButton: true.`
+                    \nSet showLoadButton: isNewImage.`
             );
 
             const { newImage, newTotal } = value;
+            const isNewImage = image.length + newImage.length < newTotal;
+            console.log("image.length = " + image.length);
+            console.log("newImage.length = " + newImage.length);
+            console.log("isNewImage: " + isNewImage);
+            console.log("Reset showLoader.");
+
             return ({
                 ...state,
-                image: [...state.image, ...newImage],
+                image: [...image, ...newImage],
                 total: newTotal,
                 status: STATUS.RESOLVED,
                 showGallery: true,
-                showLoadButton: image.length + newImage.length < total ? true : false,
+                showLoadButton: isNewImage,
+                showLoader: initState.showLoader,
             });
         }
 
         case ACTION.LOAD: {
             console.log(`Action: ${ACTION.LOAD}.`);
 
-            // const { newImage, newTotal } = value;
-            // const shortageImageCount = newTotal - state.image.length;
-            // const newImages = shortageImageCount >= state.perPage ? newImage : image.slice(0, shortageImageCount);
             if (image.length < total) {
                 console.log(
                     `Reducer run.
-                    Increment page.
+                    \nIncrement page.
                     \nSet status: ${STATUS.LOADING}.
                     \nSet showLoader: true.`
                 );
 
                 return ({
                     ...state,
-                    image: [...state.image],
                     page: page + 1,
                     status: STATUS.LOADING,
                     showLoader: true,
@@ -97,28 +94,54 @@ const reducer = (state, { type, value }) => {
                     ...state,
                 });
             }
-
         }
 
-        // case ACTION.SELECT: {
-        //     if (image.total > 0) {
-        //         console.log("Reducer. Set selectImage");
-        //         return ({ ...state, selectImage: value, });
-        //     }
-        // } break;
+        case ACTION.SELECT: {
+            console.log(`Action: ${ACTION.SELECT}.`);
+            console.log(
+                `Reducer run.
+                    \nSet selectImage.
+                    \nSet showModal: true.`
+            );
 
-        // case ACTION.CLOSE: {
-        //     if (state.status === STATUS.RESOLVED || state.status === STATUS.LOADING) {
-        //         return ({ ...state, selectImage: initState.selectImage, showModal: false });
-        //     }
-        // } break;
+            return ({
+                ...state,
+                selectImage: value,
+                showModal: true,
+            });
+        }
 
-        // case ACTION.ERROR: {
-        //     if (error) {
-        //         console.log("Reducer. Set status rejected");
-        //         return ({ ...state, status: STATUS.REJECTED });
-        //     }
-        // } break;
+        case ACTION.CLOSE: {
+            console.log(`Action: ${ACTION.CLOSE}.`);
+            console.log(
+                `Reducer run.
+                    \nReset selectImage.
+                    \nReset showModal.`
+            );
+
+            return ({
+                ...state,
+                selectImage: initState.selectImage,
+                showModal: initState.showModal,
+            });
+        }
+
+        case ACTION.ERROR: {
+            console.log(`Action: ${ACTION.ERROR}.`);
+            console.log(
+                `Reducer run.
+                    \nSet status ${STATUS.REJECTED}.
+                    \nReset showLoder.
+                    \nSet error.`
+            );
+
+            return ({
+                ...state,
+                status: STATUS.REJECTED,
+                showLoader: initState.showLoader,
+                error: value,
+            });
+        }
 
         default:
             return;

@@ -7,8 +7,8 @@ export default function Searchbar({ onSubmit }) {
     const [search, setSearch] = useState('');
     const alertMsg = "Enter name!";
 
-    const handleChange = event => {
-        setSearch(event.currentTarget.value.toLowerCase().trim());
+    const handleChange = ({ currentTarget: { value } }) => {
+        setSearch(value.toLowerCase().trim());
     };
 
     const handleSubmit = event => {
@@ -18,20 +18,26 @@ export default function Searchbar({ onSubmit }) {
             return;
         }
         onSubmit(search);
-        setSearch('');
+        // setSearch('');
     };
 
     return (
         <div className={css.Searchbar}>
-            <form className={css.form} onSubmit={handleSubmit}>
-                <button type="submit" className={css.button}>
+            <form
+                className={css.form}
+                onSubmit={handleSubmit}
+                autoComplete="on"
+            >
+                <button
+                    type="submit"
+                    className={css.button}
+                >
                     <FaSearch />
                 </button>
 
                 <input
                     className={css.input}
                     type="text"
-                    autoComplete="on"
                     autoFocus
                     placeholder="Search images and photos"
                     value={search}

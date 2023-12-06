@@ -34,7 +34,7 @@ function App() {
         {/* <ReaderApp items={publications} /> */}
         {/* <PokemonApp/> */}
         {/* <PlayerApp /> */}
-        <ImagesApp time={500} />
+        <ImagesApp/>
         {/* <ClockApp /> */}
       </div>
     </div>

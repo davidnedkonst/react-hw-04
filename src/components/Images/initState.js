@@ -5,7 +5,7 @@ const initState = {
     image: [],
     total: 0,
     page: 1,
-    perPage: 12,
+    perPage: 100,
     selectImage: null,
     status: STATUS.IDLE,
     showResetButton: false,

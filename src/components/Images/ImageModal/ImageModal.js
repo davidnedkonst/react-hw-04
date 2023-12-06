@@ -2,36 +2,41 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import css from "./ImageModal.module.css";
 
+const ESC_CODE = 'Escape';
+const modalRoot = document.getElementById('modal-root');
+
 export default function ImageModal({ show, contentModal, onClose }) {
-    const modalRoot = document.getElementById('modal-root');
 
     const handleClick = ({ target, currentTarget }) => {
-        const isBackdropClick = target === currentTarget;
-        if (isBackdropClick) onClose();
+        const isClickBackdrop = target === currentTarget;
+        if (isClickBackdrop) {
+            onClose();
+        }
     };
 
     const handleKeyDown = ({ code }) => {
-        const isEscClick = code === 'Escape';
-        if (isEscClick) onClose();
+        const isKeyDownEsc = code === ESC_CODE;
+        if (isKeyDownEsc) {
+            onClose();
+        }
     };
 
     useEffect(
         () => {
-            window.addEventListener('keydown', handleKeyDown);
-        }, []
-    );
+            const { addEventListener, removeEventListener } = window;
 
-    useEffect(
-        () => {
+            addEventListener('keydown', handleKeyDown);
+
             return (
                 () => {
-                    window.removeEventListener('keydown', handleKeyDown)
+                    removeEventListener('keydown', handleKeyDown)
                 }
             );
-        }, []
+        }
     );
 
     if (show) {
+        const { largeImageURL, tags } = contentModal;
         const jsx = (
             <div
                 className={css.Overlay}
@@ -39,8 +44,8 @@ export default function ImageModal({ show, contentModal, onClose }) {
             >
                 <img
                     className={css.Modal}
-                    src={contentModal.largeImageURL}
-                    alt={contentModal.tags}
+                    src={largeImageURL}
+                    alt={tags}
                 />
             </div>
         );

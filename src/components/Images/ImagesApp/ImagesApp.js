@@ -12,7 +12,9 @@ import initState from "../initState";
 
 import css from "./ImagesApp.module.css";
 
-export default function ImagesApp({ time = 1000 }) {
+const TIMEOUT = 1000;
+
+export default function ImagesApp() {
 
     //General state
     const [state, dispatch] = useReducer(reducer, initState);
@@ -41,64 +43,12 @@ export default function ImagesApp({ time = 1000 }) {
     };
 
     // useEffect(() => {
-    //     const runFetch = status === Status.PENDING || status === Status.LOADING;
-    //     // const i = image;
-    //     // console.log(i);
-    //     // const length = i.length;
-    //     // console.log("length = "+length);
-    //     // const isImage = length > 0;
-    //     if (runFetch && image.length > 0) {
-    //         setError(initState.error);
-    //         setStatus(Status.RESOLVED);
-    //         console.log(Status.RESOLVED);
-    //     }
-    // }, [image, status]);
-
-    // useEffect(() => {
-    //     const isUpdatePage = page !== initState.page;
-    //     if (isUpdatePage) {
-    //         setStatus(Status.LOADING);
-    //         console.log(Status.LOADING);
-    //     }
-    // }, [page]);
-
-    // useEffect(() => {
     //     const isError = error ? true : false;
     //     if (isError) {
     //         setStatus(Status.REJECTED);
     //         console.log(Status.REJECTED);
     //     }
     // }, [error]);
-
-    //Update showing
-    // useEffect(
-    //     () => {
-    //         setShowGallery(status === Status.RESOLVED || status === Status.LOADING);
-    //     },
-    //     [image, total, status]
-    // );
-
-    // useEffect(
-    //     () => {
-    //         const length = image.length;
-    //         console.log("l = " + image.length);
-    //         const isShortageImage = length < total && total !== 0;
-
-    //         setShowButton(status === Status.RESOLVED && (image.length < total && total > 0));
-    //     },
-    //     [image, total, status]
-    // );
-
-    // useEffect(
-    //     () => {
-    //         // const length = image.length;
-    //         // console.log("l = " + image.length);
-    //         // const isShortageImage = length < total && total !== 0;
-
-    //         setShowLoader(status === Status.PENDING || status === Status.LOADING);
-    //     },
-    //     [image, total, status]
-    // );
 
     //Reset error
     // useEffect(
@@ -113,26 +63,36 @@ export default function ImagesApp({ time = 1000 }) {
     //Fetch
     useEffect(
         () => {
-            const runFetch = state.status === STATUS.PENDING || state.status === STATUS.LOADING;
+            const runFetch =
+                state.status === STATUS.PENDING ||
+                state.status === STATUS.LOADING;
 
             if (runFetch) {
                 setTimeout(
                     () => {
-                        fetchFromUrl(state.query, state.page, state.perPage)
+                        const { query, page, perPage } = state;
+                        fetchFromUrl(query, page, perPage)
                             .then(
                                 ({ hits, totalHits }) => {
                                     dispatch({
                                         type: ACTION.RESPONSE,
-                                        value: { newImage: [...hits], newTotal: totalHits },
+                                        value: { newImage: hits, newTotal: totalHits },
                                     });
                                 }
                             )
-                            .catch(error => console.log(error));
-                    }, time
+                            .catch(
+                                error => {
+                                    dispatch({
+                                        type: ACTION.ERROR,
+                                        value: error
+                                    })
+                                }
+                            );
+                    }, TIMEOUT
                 );
             };
         },
-        [state, time]
+        [state]
     );
 
     return (
@@ -147,12 +107,6 @@ export default function ImagesApp({ time = 1000 }) {
                 onClick={Handler.reset}
             />
 
-            <ImageGallery
-                show={state.showGallery}
-                image={state.image}
-                onImageClick={Handler.select}
-            />
-
             <Button
                 show={state.showLoadButton}
                 name="Load"
@@ -161,6 +115,12 @@ export default function ImagesApp({ time = 1000 }) {
 
             <Loader
                 show={state.showLoader}
+            />
+
+            <ImageGallery
+                show={state.showGallery}
+                image={state.image}
+                onImageClick={Handler.select}
             />
 
             <ImageModal
