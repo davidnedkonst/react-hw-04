@@ -1,6 +1,6 @@
 import STATUS from "./Status";
 
-const initState = {
+ export const initState = {
     query: null,
     image: [],
     total: 0,
@@ -8,12 +8,13 @@ const initState = {
     perPage: 100,
     selectImage: null,
     status: STATUS.IDLE,
-    showResetButton: false,
-    showGallery: false,
-    showLoadButton: false,
-    showLoader: false,
-    showModal: false,
     error: null,
 };
 
-export default initState;
+export const initShow = {
+    showResetButton: false,
+    showLoadButton: false,
+    showLoader: false,
+    showGallery: false,
+    showModal: false,
+};

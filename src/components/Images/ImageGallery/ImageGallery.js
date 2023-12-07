@@ -6,9 +6,9 @@ export default function ImageGallery({ show, image, onImageClick }) {
     if (show)
         return (
             <div className={css.ImageGallery} >{
-                image.map(item =>
+                image.map((item, id) =>
                     <ImageGalleryItem
-                        key={item.id}
+                        key={id}
                         item={item}
                         onImageClick={onImageClick}
                     />

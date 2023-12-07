@@ -36,19 +36,21 @@ export default function ImageModal({ show, contentModal, onClose }) {
     );
 
     if (show) {
-        const { largeImageURL, tags } = contentModal;
-        const jsx = (
-            <div
-                className={css.Overlay}
-                onClick={handleClick}
-            >
-                <img
-                    className={css.Modal}
-                    src={largeImageURL}
-                    alt={tags}
-                />
-            </div>
-        );
-        return createPortal(jsx, modalRoot);
+        if (contentModal) {
+            const { largeImageURL, tags } = contentModal;
+            const jsx = (
+                <div
+                    className={css.Overlay}
+                    onClick={handleClick}
+                >
+                    <img
+                        className={css.Modal}
+                        src={largeImageURL}
+                        alt={tags}
+                    />
+                </div>
+            );
+            return createPortal(jsx, modalRoot);
+        }
     }
 };

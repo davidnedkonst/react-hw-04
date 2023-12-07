@@ -5,42 +5,51 @@ import ImageModal from "../ImageModal";
 import fetchFromUrl from "./Fetch";
 import Searchbar from "../Searchbar";
 import ImageGallery from "../ImageGallery";
-import reducer from "./Reducer";
+import { stateReducer, showReducer } from "./Reducer";
 import STATUS from "./Status";
 import ACTION from "./Action";
-import initState from "./initState";
+import { initState, initShow } from "./initState";
 
 import css from "./ImagesApp.module.css";
 
-const TIMEOUT = 1000;
+const TIMEOUT = 3000;
 
 export default function ImagesApp() {
 
     //General state
-    const [state, dispatch] = useReducer(reducer, initState);
+    const [state, stateDispatch] = useReducer(stateReducer, initState);
+    const [show, showDispatch] = useReducer(showReducer, initShow);
 
     //Handlers
     const Handler = {
         submit: query => {
-            dispatch({ type: ACTION.INPUT, value: query });
+            stateDispatch({ type: ACTION.INPUT, value: query });
         },
 
         reset: event => {
-            dispatch({ type: ACTION.RESET });
+            stateDispatch({ type: ACTION.RESET });
         },
 
         load: event => {
-            dispatch({ type: ACTION.LOAD });
+            stateDispatch({ type: ACTION.LOAD });
         },
 
         select: selectImage => {
-            dispatch({ type: ACTION.SELECT, value: selectImage });
+            stateDispatch({ type: ACTION.SELECT, value: selectImage });
         },
 
         close: () => {
-            dispatch({ type: ACTION.CLOSE, });
+            stateDispatch({ type: ACTION.CLOSE, });
         },
     };
+
+    //Show
+    useEffect(
+        () => {
+            showDispatch({ type: state.status });
+        },
+        [state.status]
+    );
 
     //Fetch
     useEffect(
@@ -56,7 +65,7 @@ export default function ImagesApp() {
                         fetchFromUrl(query, page, perPage)
                             .then(
                                 ({ hits, totalHits }) => {
-                                    dispatch({
+                                    stateDispatch({
                                         type: ACTION.RESPONSE,
                                         value: { newImage: hits, newTotal: totalHits },
                                     });
@@ -64,7 +73,7 @@ export default function ImagesApp() {
                             )
                             .catch(
                                 error => {
-                                    dispatch({ type: ACTION.ERROR, value: error })
+                                    stateDispatch({ type: ACTION.ERROR, value: error })
                                 }
                             );
                     }, TIMEOUT
@@ -81,29 +90,29 @@ export default function ImagesApp() {
             <Searchbar onSubmit={Handler.submit} />
 
             <Button
-                show={state.showResetButton}
+                show={show.showResetButton}
                 name="Reset"
                 onClick={Handler.reset}
             />
 
             <Button
-                show={state.showLoadButton}
+                show={show.showLoadButton}
                 name="Load"
                 onClick={Handler.load}
             />
 
             <Loader
-                show={state.showLoader}
+                show={show.showLoader}
             />
 
             <ImageGallery
-                show={state.showGallery}
+                show={show.showGallery}
                 image={state.image}
                 onImageClick={Handler.select}
             />
 
             <ImageModal
-                show={state.showModal}
+                show={show.showModal}
                 contentModal={state.selectImage}
                 onClose={Handler.close}
             />
