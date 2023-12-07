@@ -13,15 +13,7 @@ export const stateReducer = (state, { type, value }) => {
     switch (type) {
         case ACTION.INPUT: {
             const isUpdateQuery = query !== value;
-            console.log(`Action: ${ACTION.INPUT}.`);
             if (isUpdateQuery) {
-                console.log(
-                    `Reducer run. 
-                    \nSet query: ${value}. 
-                    \nSet status: ${STATUS.PENDING}
-                    \nSet showReset: true.
-                    \nSet showLoader: true.`
-                );
                 return ({
                     ...initState,
                     query: value,
@@ -29,33 +21,18 @@ export const stateReducer = (state, { type, value }) => {
                 });
             }
             else {
-                console.log("Reducer run. Can't set query.");
-                return ({ ...state });
+                return ({
+                    ...state
+                });
             }
         }
 
         case ACTION.RESET: {
-            console.log(`Action: ${ACTION.RESET}.`);
             return ({ ...initState });
         }
 
         case ACTION.RESPONSE: {
-            console.log(`Action: ${ACTION.RESPONSE}.`);
-            console.log(
-                `Reducer run.
-                    \nSet image. 
-                    \nSet status: ${STATUS.RESOLVED}
-                    \nSet showGallery: true.
-                    \nSet showLoadButton: isNewImage.`
-            );
-
             const { newImage, newTotal } = value;
-            const isNewImage = image.length + newImage.length < newTotal;
-            console.log("image.length = " + image.length);
-            console.log("newImage.length = " + newImage.length);
-            console.log("isNewImage: " + isNewImage);
-            console.log("Reset showLoader.");
-
             return ({
                 ...state,
                 image: [...image, ...newImage],
@@ -65,25 +42,14 @@ export const stateReducer = (state, { type, value }) => {
         }
 
         case ACTION.LOAD: {
-            console.log(`Action: ${ACTION.LOAD}.`);
-
             if (image.length < total) {
-                console.log(
-                    `Reducer run.
-                    \nIncrement page.
-                    \nSet status: ${STATUS.LOADING}.
-                    \nSet showLoader: true.`
-                );
-
                 return ({
                     ...state,
                     page: page + 1,
                     status: STATUS.LOADING,
                 });
             }
-
             else {
-                console.log("Reducer run. All images are loaded.");
                 return ({
                     ...state,
                 });
@@ -106,13 +72,6 @@ export const stateReducer = (state, { type, value }) => {
         }
 
         case ACTION.CLOSE: {
-            console.log(`Action: ${ACTION.CLOSE}.`);
-            console.log(
-                `Reducer run.
-                    \nReset selectImage.
-                    \nReset showModal.`
-            );
-
             return ({
                 ...state,
                 selectImage: initState.selectImage,
@@ -121,14 +80,6 @@ export const stateReducer = (state, { type, value }) => {
         }
 
         case ACTION.ERROR: {
-            console.log(`Action: ${ACTION.ERROR}.`);
-            console.log(
-                `Reducer run.
-                    \nSet status ${STATUS.REJECTED}.
-                    \nReset showLoder.
-                    \nSet error.`
-            );
-
             return ({
                 ...state,
                 status: STATUS.REJECTED,
@@ -156,29 +107,31 @@ export const showReducer = (show, { type }) => {
                 showLoader: true,
             });
         }
-            
+
         case STATUS.RESOLVED: {
             return ({
-                ...initShow,
-                showResetButton: true,
+                ...show,
                 showLoadButton: true,
-                showLoader: false,
                 showGallery: true,
+                showLoader: false,
+                showModal: false,
             });
         }
-            
+
         case STATUS.LOADING: {
             return ({
+                ...show,
                 showLoader: true,
             });
         }
-            
+
         case STATUS.MODAL: {
             return ({
+                ...show,
                 showModal: true,
             });
-        }   
-            
+        }
+
         case STATUS.REJECTED: {
             return ({
                 ...initShow,

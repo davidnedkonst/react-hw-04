@@ -12,7 +12,7 @@ import { initState, initShow } from "./initState";
 
 import css from "./ImagesApp.module.css";
 
-const TIMEOUT = 1000;
+const TIMEOUT = 3000;
 
 export default function ImagesApp() {
 
@@ -43,11 +43,10 @@ export default function ImagesApp() {
         },
     };
 
+    //Show
     useEffect(
         () => {
-            if (1) {
-                showDispatch({type: state.status});
-            }
+            showDispatch({ type: state.status });
         },
         [state.status]
     );
