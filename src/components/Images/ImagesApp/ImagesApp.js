@@ -12,7 +12,7 @@ import { initState, initShow } from "./initState";
 
 import css from "./ImagesApp.module.css";
 
-const TIMEOUT = 3000;
+const TIMEOUT = 2000;
 
 export default function ImagesApp() {
 

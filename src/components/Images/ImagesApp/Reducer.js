@@ -57,13 +57,6 @@ export const stateReducer = (state, { type, value }) => {
         }
 
         case ACTION.SELECT: {
-            console.log(`Action: ${ACTION.SELECT}.`);
-            console.log(
-                `Reducer run.
-                    \nSet selectImage.
-                    \nSet showModal: true.`
-            );
-
             return ({
                 ...state,
                 selectImage: value,
