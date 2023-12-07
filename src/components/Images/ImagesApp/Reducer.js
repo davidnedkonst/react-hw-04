@@ -56,22 +56,6 @@ export const stateReducer = (state, { type, value }) => {
             }
         }
 
-        case ACTION.SELECT: {
-            return ({
-                ...state,
-                selectImage: value,
-                status: STATUS.MODAL,
-            });
-        }
-
-        case ACTION.CLOSE: {
-            return ({
-                ...state,
-                selectImage: initState.selectImage,
-                status: STATUS.RESOLVED,
-            });
-        }
-
         case ACTION.ERROR: {
             return ({
                 ...state,
@@ -115,13 +99,6 @@ export const showReducer = (show, { type }) => {
             return ({
                 ...show,
                 showLoader: true,
-            });
-        }
-
-        case STATUS.MODAL: {
-            return ({
-                ...show,
-                showModal: true,
             });
         }
 

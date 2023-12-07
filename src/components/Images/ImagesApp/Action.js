@@ -3,8 +3,6 @@ const ACTION = {
     RESET: 'reset',
     RESPONSE: 'response',
     LOAD: 'load',
-    SELECT: 'select',
-    CLOSE: 'close',
     ERROR: 'error',
 };
 

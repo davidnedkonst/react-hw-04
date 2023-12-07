@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import css from "./ImageModal.module.css";
 
 const ESC_CODE = 'Escape';
+const KEYDOWN_CODE = 'keydown';
 const modalRoot = document.getElementById('modal-root');
 
 export default function ImageModal({ show, contentModal, onClose }) {
@@ -17,6 +18,7 @@ export default function ImageModal({ show, contentModal, onClose }) {
     const handleKeyDown = ({ code }) => {
         const isKeyDownEsc = code === ESC_CODE;
         if (isKeyDownEsc) {
+            console.log(KEYDOWN_CODE);
             onClose();
         }
     };
@@ -24,14 +26,8 @@ export default function ImageModal({ show, contentModal, onClose }) {
     useEffect(
         () => {
             const { addEventListener, removeEventListener } = window;
-
-            addEventListener('keydown', handleKeyDown);
-
-            return (
-                () => {
-                    removeEventListener('keydown', handleKeyDown)
-                }
-            );
+            addEventListener(KEYDOWN_CODE, handleKeyDown);
+            return (() => removeEventListener(KEYDOWN_CODE, handleKeyDown));
         }
     );
 
