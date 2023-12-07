@@ -5,6 +5,7 @@ const STATUS = {
     RESOLVED: 'resolved',
     LOADING: 'loading',
     RESET: 'reset',
+    MODAL: 'modal',
 };
 
 export default STATUS;

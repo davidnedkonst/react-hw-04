@@ -1,8 +1,8 @@
 import ACTION from "./Action";
 import STATUS from "./Status";
-import initState from "./initState";
+import { initState, initShow } from "./initState";
 
-const reducer = (state, { type, value }) => {
+export const stateReducer = (state, { type, value }) => {
     const {
         query,
         image,
@@ -26,8 +26,6 @@ const reducer = (state, { type, value }) => {
                     ...initState,
                     query: value,
                     status: STATUS.PENDING,
-                    showResetButton: true,
-                    showLoader: true,
                 });
             }
             else {
@@ -63,9 +61,6 @@ const reducer = (state, { type, value }) => {
                 image: [...image, ...newImage],
                 total: newTotal,
                 status: STATUS.RESOLVED,
-                showGallery: true,
-                showLoadButton: isNewImage,
-                showLoader: initState.showLoader,
             });
         }
 
@@ -84,7 +79,6 @@ const reducer = (state, { type, value }) => {
                     ...state,
                     page: page + 1,
                     status: STATUS.LOADING,
-                    showLoader: true,
                 });
             }
 
@@ -107,7 +101,7 @@ const reducer = (state, { type, value }) => {
             return ({
                 ...state,
                 selectImage: value,
-                showModal: true,
+                status: STATUS.MODAL,
             });
         }
 
@@ -122,7 +116,7 @@ const reducer = (state, { type, value }) => {
             return ({
                 ...state,
                 selectImage: initState.selectImage,
-                showModal: initState.showModal,
+                status: STATUS.RESOLVED,
             });
         }
 
@@ -138,14 +132,62 @@ const reducer = (state, { type, value }) => {
             return ({
                 ...state,
                 status: STATUS.REJECTED,
-                showLoader: initState.showLoader,
                 error: value,
             });
         }
 
         default:
-            return;
+            break;
     }
 };
 
-export default reducer;
+export const showReducer = (show, { type }) => {
+    switch (type) {
+        case STATUS.IDLE: {
+            return ({
+                ...initShow,
+            });
+        }
+
+        case STATUS.PENDING: {
+            return ({
+                ...initShow,
+                showResetButton: true,
+                showLoader: true,
+            });
+        }
+            
+        case STATUS.RESOLVED: {
+            return ({
+                ...initShow,
+                showResetButton: true,
+                showLoadButton: true,
+                showLoader: false,
+                showGallery: true,
+            });
+        }
+            
+        case STATUS.LOADING: {
+            return ({
+                showLoader: true,
+            });
+        }
+            
+        case STATUS.MODAL: {
+            return ({
+                showModal: true,
+            });
+        }   
+            
+        case STATUS.REJECTED: {
+            return ({
+                ...initShow,
+                showResetButton: true,
+                showLoader: false,
+            });
+        }
+
+        default:
+            break;
+    }
+};
