@@ -2,13 +2,13 @@ import { useReducer, useEffect } from "react";
 import Button from "../Button";
 import Loader from "../Loader";
 import ImageModal from "../ImageModal";
-import fetchFromUrl from "../fetch";
+import fetchFromUrl from "./Fetch";
 import Searchbar from "../Searchbar";
 import ImageGallery from "../ImageGallery";
-import reducer from "../reducer";
-import STATUS from "../Status";
-import ACTION from "../Action";
-import initState from "../initState";
+import reducer from "./Reducer";
+import STATUS from "./Status";
+import ACTION from "./Action";
+import initState from "./initState";
 
 import css from "./ImagesApp.module.css";
 
@@ -64,10 +64,7 @@ export default function ImagesApp() {
                             )
                             .catch(
                                 error => {
-                                    dispatch({
-                                        type: ACTION.ERROR,
-                                        value: error
-                                    })
+                                    dispatch({ type: ACTION.ERROR, value: error })
                                 }
                             );
                     }, TIMEOUT

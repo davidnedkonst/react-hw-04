@@ -1,6 +1,6 @@
-import myKey from "./key.json";
+import KEY from "./key.json";
 
-function getSearchUrl(query, page = 1, perPage = 12, key = myKey.key, type = "photo", orientation = "horizontal") {
+function getSearchUrl(query, page = 1, perPage = 12, key = KEY.key, type = "photo", orientation = "horizontal") {
     const strApi = "https://pixabay.com/api/";
     const strKey = `?key=${key}`;
     const strQuery = `&q=${query}`;
