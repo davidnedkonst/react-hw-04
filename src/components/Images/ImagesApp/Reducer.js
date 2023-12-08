@@ -88,6 +88,7 @@ export const showReducer = (show, { type }) => {
         case STATUS.RESOLVED: {
             return ({
                 ...show,
+                showResetButton: true,
                 showLoadButton: true,
                 showGallery: true,
                 showLoader: false,
