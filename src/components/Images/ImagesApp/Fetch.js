@@ -1,6 +1,14 @@
+import axios from "axios";
 import KEY from "./key.json";
 
-function getSearchUrl(query, page = 1, perPage = 12, key = KEY.key, type = "photo", orientation = "horizontal") {
+function searchUrl(
+    query,
+    page = 1,
+    perPage = 12,
+    key = KEY.key,
+    type = "photo",
+    orientation = "horizontal1"
+) {
     const strApi = "https://pixabay.com/api/";
     const strKey = `?key=${key}`;
     const strQuery = `&q=${query}`;
@@ -13,15 +21,25 @@ function getSearchUrl(query, page = 1, perPage = 12, key = KEY.key, type = "phot
 };
 
 export default function fetchFromUrl(query, page, perPage) {
-    const url = getSearchUrl(query, page, perPage);
+    const url = searchUrl(query, page, perPage);
     const errorMsg = `Name ${query} not found`;
-
-    return fetch(url)
-        .then(
-            response => {
-                if (response.ok) return response.json();
-                if (!response.ok) return Promise.reject(new Error(errorMsg));
+    const response = axios
+        .get(url)
+        .then(({ data }) => data)
+        .catch(
+            error => {
+                console.log(errorMsg);
             }
         );
+    return response;
+
+    //
+    // return fetch(url)
+    //     .then(
+    //         response => {
+    //             if (response.ok) return response.json();
+    //             if (!response.ok) return Promise.reject(new Error(errorMsg));
+    //         }
+    //     );
 };
 

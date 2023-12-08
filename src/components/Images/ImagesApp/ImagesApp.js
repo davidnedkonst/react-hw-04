@@ -4,6 +4,7 @@ import Loader from "../Loader";
 import fetchFromUrl from "./Fetch";
 import Searchbar from "../Searchbar";
 import ImageGallery from "../ImageGallery";
+// import { stateReducer, showReducer } from "./reducer";
 import { stateReducer, showReducer } from "./Reducer";
 import STATUS from "./Status";
 import ACTION from "./Action";
