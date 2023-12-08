@@ -6,7 +6,6 @@ import STATUS from "./Status";
     total: 0,
     page: 1,
     perPage: 100,
-    selectImage: null,
     status: STATUS.IDLE,
     error: null,
 };
@@ -16,5 +15,4 @@ export const initShow = {
     showLoadButton: false,
     showLoader: false,
     showGallery: false,
-    showModal: false,
 };

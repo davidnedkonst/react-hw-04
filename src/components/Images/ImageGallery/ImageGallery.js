@@ -1,7 +1,7 @@
 import ImageGalleryItem from "../ImageGalleryItem";
 import css from "./ImageGallery.module.css";
 
-export default function ImageGallery({ show, image, onImageClick }) {
+export default function ImageGallery({ show, image }) {
 
     if (show)
         return (
@@ -10,7 +10,6 @@ export default function ImageGallery({ show, image, onImageClick }) {
                     <ImageGalleryItem
                         key={id}
                         item={item}
-                        onImageClick={onImageClick}
                     />
                 )
             }</div>

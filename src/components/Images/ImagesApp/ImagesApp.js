@@ -1,10 +1,10 @@
 import { useReducer, useEffect } from "react";
 import Button from "../Button";
 import Loader from "../Loader";
-import ImageModal from "../ImageModal";
 import fetchFromUrl from "./Fetch";
 import Searchbar from "../Searchbar";
 import ImageGallery from "../ImageGallery";
+// import { stateReducer, showReducer } from "./reducer";
 import { stateReducer, showReducer } from "./Reducer";
 import STATUS from "./Status";
 import ACTION from "./Action";
@@ -32,14 +32,6 @@ export default function ImagesApp() {
 
         load: event => {
             stateDispatch({ type: ACTION.LOAD });
-        },
-
-        select: selectImage => {
-            stateDispatch({ type: ACTION.SELECT, value: selectImage });
-        },
-
-        close: () => {
-            stateDispatch({ type: ACTION.CLOSE, });
         },
     };
 
@@ -108,13 +100,6 @@ export default function ImagesApp() {
             <ImageGallery
                 show={show.showGallery}
                 image={state.image}
-                onImageClick={Handler.select}
-            />
-
-            <ImageModal
-                show={show.showModal}
-                contentModal={state.selectImage}
-                onClose={Handler.close}
             />
         </div>
     );
