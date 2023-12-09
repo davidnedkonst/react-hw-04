@@ -5,7 +5,7 @@ import PokemonInfo from "./PokemonInfo";
 import PokemonErrorMsg from "./PokemonErrorMsg";
 import PokemonLoadMsg from "./PokemonLoadMsg";
 import fetchPokemon from "./fetchPokemon";
-import { Status } from "../../utils";
+import Status from "./Status";
 
 const initState = {
     pokemon: null,
